@@ -56,15 +56,103 @@
 		21FD54BF2941687400A26685 /* GithubApp */ = {
 			isa = PBXGroup;
 			children = (
-				21FD54C02941687400A26685 /* AppDelegate.swift */,
-				21FD54C22941687400A26685 /* SceneDelegate.swift */,
-				21FD54C42941687400A26685 /* ViewController.swift */,
-				21FD54C62941687400A26685 /* Main.storyboard */,
-				21FD54C92941687500A26685 /* Assets.xcassets */,
-				21FD54CB2941687500A26685 /* LaunchScreen.storyboard */,
+				21FD54D429416A7500A26685 /* Screen */,
+				21FD54D629416A8700A26685 /* Model */,
+				21FD54D529416A7B00A26685 /* Global */,
 				21FD54CE2941687500A26685 /* Info.plist */,
 			);
 			path = GithubApp;
+			sourceTree = "<group>";
+		};
+		21FD54D429416A7500A26685 /* Screen */ = {
+			isa = PBXGroup;
+			children = (
+				21FD54DE29416B5000A26685 /* Main */,
+			);
+			path = Screen;
+			sourceTree = "<group>";
+		};
+		21FD54D529416A7B00A26685 /* Global */ = {
+			isa = PBXGroup;
+			children = (
+				21FD54D729416ABA00A26685 /* Literal */,
+				21FD54D829416AC100A26685 /* Extension */,
+				21FD54DA29416AE100A26685 /* Service */,
+				21FD54D929416ACE00A26685 /* Support */,
+				21FD54DC29416AE700A26685 /* base */,
+				21FD54DD29416AEF00A26685 /* UIComponent */,
+				21FD54DB29416AE400A26685 /* Resource */,
+			);
+			path = Global;
+			sourceTree = "<group>";
+		};
+		21FD54D629416A8700A26685 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		21FD54D729416ABA00A26685 /* Literal */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Literal;
+			sourceTree = "<group>";
+		};
+		21FD54D829416AC100A26685 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		21FD54D929416ACE00A26685 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				21FD54C02941687400A26685 /* AppDelegate.swift */,
+				21FD54C22941687400A26685 /* SceneDelegate.swift */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+		21FD54DA29416AE100A26685 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		21FD54DB29416AE400A26685 /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				21FD54C62941687400A26685 /* Main.storyboard */,
+				21FD54C92941687500A26685 /* Assets.xcassets */,
+				21FD54CB2941687500A26685 /* LaunchScreen.storyboard */,
+			);
+			path = Resource;
+			sourceTree = "<group>";
+		};
+		21FD54DC29416AE700A26685 /* base */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = base;
+			sourceTree = "<group>";
+		};
+		21FD54DD29416AEF00A26685 /* UIComponent */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = UIComponent;
+			sourceTree = "<group>";
+		};
+		21FD54DE29416B5000A26685 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				21FD54C42941687400A26685 /* ViewController.swift */,
+			);
+			path = Main;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
