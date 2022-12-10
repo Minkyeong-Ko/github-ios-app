@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		21839E092944258B00307F63 /* MainTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21839E082944258B00307F63 /* MainTabViewController.swift */; };
+		21839E0B294425AE00307F63 /* BaseNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21839E0A294425AE00307F63 /* BaseNavigationController.swift */; };
+		21839E0D29444C3900307F63 /* ImageLiteral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21839E0C29444C3900307F63 /* ImageLiteral.swift */; };
+		21839E1129444D4C00307F63 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21839E1029444D4C00307F63 /* ProfileViewController.swift */; };
+		21839E1329444D5500307F63 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21839E1229444D5500307F63 /* SearchViewController.swift */; };
+		21839E1529444F5000307F63 /* LoginLogoutButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21839E1429444F5000307F63 /* LoginLogoutButton.swift */; };
 		2188A7EA2943569C00161145 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2188A7E92943569C00161145 /* BaseViewController.swift */; };
 		2188A7EC294358A300161145 /* Authorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2188A7EB294358A300161145 /* Authorization.swift */; };
 		2188A7EE29435D7600161145 /* ClientInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2188A7ED29435D7600161145 /* ClientInfo.plist */; };
@@ -17,6 +23,7 @@
 		2188A7F829436B9B00161145 /* RepositoryParent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2188A7F729436B9B00161145 /* RepositoryParent.swift */; };
 		2188A7FA29436BB300161145 /* RepositoryOwner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2188A7F929436BB300161145 /* RepositoryOwner.swift */; };
 		2188A7FC29436C0D00161145 /* UserPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2188A7FB29436C0D00161145 /* UserPlan.swift */; };
+		21AF7D2429448FEA00510F32 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AF7D2329448FEA00510F32 /* UIColor+Extension.swift */; };
 		21E92AE12942B04B0034357B /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 21E92AE02942B04B0034357B /* Alamofire */; };
 		21E92AE32942B0F00034357B /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E92AE22942B0F00034357B /* KeychainManager.swift */; };
 		21E92AE5294310540034357B /* UserResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E92AE4294310540034357B /* UserResponse.swift */; };
@@ -35,6 +42,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		21839E082944258B00307F63 /* MainTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabViewController.swift; sourceTree = "<group>"; };
+		21839E0A294425AE00307F63 /* BaseNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNavigationController.swift; sourceTree = "<group>"; };
+		21839E0C29444C3900307F63 /* ImageLiteral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ImageLiteral.swift; path = GithubApp/Global/Base/ImageLiteral.swift; sourceTree = SOURCE_ROOT; };
+		21839E1029444D4C00307F63 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		21839E1229444D5500307F63 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
+		21839E1429444F5000307F63 /* LoginLogoutButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginLogoutButton.swift; sourceTree = "<group>"; };
 		2188A7E92943569C00161145 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		2188A7EB294358A300161145 /* Authorization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authorization.swift; sourceTree = "<group>"; };
 		2188A7ED29435D7600161145 /* ClientInfo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ClientInfo.plist; sourceTree = "<group>"; };
@@ -45,6 +58,7 @@
 		2188A7F729436B9B00161145 /* RepositoryParent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryParent.swift; sourceTree = "<group>"; };
 		2188A7F929436BB300161145 /* RepositoryOwner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryOwner.swift; sourceTree = "<group>"; };
 		2188A7FB29436C0D00161145 /* UserPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPlan.swift; sourceTree = "<group>"; };
+		21AF7D2329448FEA00510F32 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		21E92AE22942B0F00034357B /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
 		21E92AE4294310540034357B /* UserResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserResponse.swift; sourceTree = "<group>"; };
 		21E92AEB29431A260034357B /* RepositoryResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepositoryResponse.swift; sourceTree = "<group>"; };
@@ -75,6 +89,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		21839E0E29444D3A00307F63 /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				21839E1229444D5500307F63 /* SearchViewController.swift */,
+			);
+			path = Search;
+			sourceTree = "<group>";
+		};
+		21839E0F29444D3F00307F63 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				21839E1029444D4C00307F63 /* ProfileViewController.swift */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
 		2188A7FD29436C2D00161145 /* Repository */ = {
 			isa = PBXGroup;
 			children = (
@@ -171,6 +201,7 @@
 		21FD54D729416ABA00A26685 /* Literal */ = {
 			isa = PBXGroup;
 			children = (
+				21839E0C29444C3900307F63 /* ImageLiteral.swift */,
 			);
 			path = Literal;
 			sourceTree = "<group>";
@@ -179,6 +210,7 @@
 			isa = PBXGroup;
 			children = (
 				2188A7EF29435DEE00161145 /* GithubApp++Bundle.swift */,
+				21AF7D2329448FEA00510F32 /* UIColor+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -215,6 +247,7 @@
 			isa = PBXGroup;
 			children = (
 				2188A7E92943569C00161145 /* BaseViewController.swift */,
+				21839E0A294425AE00307F63 /* BaseNavigationController.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -229,7 +262,11 @@
 		21FD54DE29416B5000A26685 /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				21839E0F29444D3F00307F63 /* Profile */,
+				21839E0E29444D3A00307F63 /* Search */,
 				21FD54C42941687400A26685 /* ViewController.swift */,
+				21839E082944258B00307F63 /* MainTabViewController.swift */,
+				21839E1429444F5000307F63 /* LoginLogoutButton.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -314,23 +351,30 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				21839E1529444F5000307F63 /* LoginLogoutButton.swift in Sources */,
 				21E92AF129431A260034357B /* RepositoryResponse.swift in Sources */,
 				21E92AF92943246E0034357B /* SearchRepositoriesOwner.swift in Sources */,
 				2188A7F629436B7F00161145 /* RepositoryPermission.swift in Sources */,
+				21839E0D29444C3900307F63 /* ImageLiteral.swift in Sources */,
 				21E92AF72943245B0034357B /* SearchRepositoriesItem.swift in Sources */,
 				21E92AFB294324880034357B /* SearchRepositoriesResponse.swift in Sources */,
+				21839E092944258B00307F63 /* MainTabViewController.swift in Sources */,
 				2188A7F429436B5A00161145 /* RepositoryOrganization.swift in Sources */,
 				2188A7EA2943569C00161145 /* BaseViewController.swift in Sources */,
+				21839E0B294425AE00307F63 /* BaseNavigationController.swift in Sources */,
 				2188A7EC294358A300161145 /* Authorization.swift in Sources */,
 				21FD54E02941CE2400A26685 /* GithubManager.swift in Sources */,
 				2188A7FC29436C0D00161145 /* UserPlan.swift in Sources */,
 				21FD54C52941687400A26685 /* ViewController.swift in Sources */,
 				21E92AE32942B0F00034357B /* KeychainManager.swift in Sources */,
+				21839E1129444D4C00307F63 /* ProfileViewController.swift in Sources */,
 				2188A7F029435DEE00161145 /* GithubApp++Bundle.swift in Sources */,
 				21FD54C12941687400A26685 /* AppDelegate.swift in Sources */,
+				21839E1329444D5500307F63 /* SearchViewController.swift in Sources */,
 				21E92AE5294310540034357B /* UserResponse.swift in Sources */,
 				2188A7F229436B4400161145 /* RepositoryLisense.swift in Sources */,
 				21FD54C32941687400A26685 /* SceneDelegate.swift in Sources */,
+				21AF7D2429448FEA00510F32 /* UIColor+Extension.swift in Sources */,
 				2188A7F829436B9B00161145 /* RepositoryParent.swift in Sources */,
 				2188A7FA29436BB300161145 /* RepositoryOwner.swift in Sources */,
 			);
