@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let appearance = UITabBarAppearance()
             appearance.configureWithOpaqueBackground()
             
-            UITabBar.appearance().backgroundColor = .githubGray
+            UITabBar.appearance().backgroundColor = .githubBlue
         }
         
         return true

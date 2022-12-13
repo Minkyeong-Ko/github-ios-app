@@ -20,7 +20,11 @@ private enum TabBarLiteral: String {
     }
 }
 
-class MainTabViewController: UITabBarController {
+final class MainTabViewController: UITabBarController {
+    // MARK: - Properties
+    
+    let loginLogoutButton = LoginLogoutButton()
+    
     // MARK: - Life Cycle
 
     override func viewDidLoad() {
@@ -33,7 +37,7 @@ class MainTabViewController: UITabBarController {
         setTabViewControllers()
         tabBar.tintColor = .white
         view.backgroundColor = .systemBackground
-        tabBar.barTintColor = .githubGray
+        tabBar.barTintColor = .githubBlue
     }
 
     func render() {}
@@ -41,25 +45,11 @@ class MainTabViewController: UITabBarController {
     // MARK: - Func
 
     private func setTabViewControllers() {
-        let searchTab = BaseNavigationController(
-            rootViewController: ProfileViewController(),
-            title: TabBarLiteral.search(),
-            tabBarItem: UITabBarItem(
-                title: TabBarLiteral.search(),
-                image: ImageLiteral.searchTab,
-                selectedImage: ImageLiteral.searchTabSelected
-            )
-        )
-        let profileTab = BaseNavigationController(
-            rootViewController: ProfileViewController(),
-            title: TabBarLiteral.profile(),
-            tabBarItem: UITabBarItem(
-                title: TabBarLiteral.profile(),
-                image: ImageLiteral.profileTab,
-                selectedImage: ImageLiteral.profileTabSelected
-            )
-        )
-
+        let searchTab = SearchViewController()
+        searchTab.tabBarItem = UITabBarItem(title: TabBarLiteral.search(), image: ImageLiteral.searchTab, selectedImage: ImageLiteral.searchTab)
+        let profileTab = ProfileViewController()
+        profileTab.tabBarItem = UITabBarItem(title: TabBarLiteral.profile(), image: ImageLiteral.profileTab, selectedImage: ImageLiteral.profileTabSelected)
+        
         setViewControllers(
             [searchTab, profileTab],
             animated: true
