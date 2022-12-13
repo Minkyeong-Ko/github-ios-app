@@ -8,7 +8,10 @@
 import UIKit
 
 extension UIColor {
-    static let githubGray: UIColor = .init(hex: "404040")
+    static let githubGray: UIColor = .init(hex: "8a8a8e")
+    static let githubLightGray: UIColor = .init(hex: "F6F6F6")
+    static let githubBlue: UIColor = .init(hex: "24292F")
+    static let githubYellow: UIColor = .init(hex: "FFC531")
 }
 
 extension UIColor {

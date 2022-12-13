@@ -9,11 +9,17 @@ import Foundation
 import UIKit
 
 enum ImageLiteral {
-    // MARK: - Tab
-    static var searchTab: UIImage { .load(systemName: "magnifyingglass.circle") }
+    // MARK: Tab
+    static var searchTab: UIImage { .load(systemName: "magnifyingglass") }
     static var searchTabSelected: UIImage { .load(systemName: "magnifyingglass.circle.fill") }
     static var profileTab: UIImage { .load(systemName: "person") }
     static var profileTabSelected: UIImage { .load(systemName: "person.fill") }
+    
+    // MARK: Symbols
+    static var userProfileSymbol: UIImage { .load(systemName: "person") }
+    static var repositorySymbol: UIImage { .load(systemName: "book.closed") }
+    static var starFill: UIImage { .load(systemName: "star.fill") }
+    static var starOutline: UIImage { .load(systemName: "star") }
 }
 
 extension UIImage {
