@@ -9,112 +9,76 @@ import Foundation
 import UIKit
 
 import Alamofire
+import RxSwift
 
 class GithubManager {
-    let client_id = Bundle.main.clientID
-    let client_secret = Bundle.main.clientSecret
+    // MARK: - Rx
+    let disposeBag = DisposeBag()
+    // TODO: - dispose 처리 시점
     
+    // MARK: - Shared
     static let shared = GithubManager()
     
     private init() {}
     
-    // MARK: - 로그인 로그아웃
-    
-    func requestCode() {
-        print("client_id: \(client_id)")
-        print("client_secret: \(client_secret)")
-        
-        let scope = "repo,user"
-        let urlString = "https://github.com/login/oauth/authorize?client_id=\(client_id)&scope=\(scope)"
-        if let url = URL(string: urlString), UIApplication.shared.canOpenURL(url) {
-            UIApplication.shared.open(url)
-            // redirect to scene(_:openURLContexts:) if user authorized
-        }
-    }
-    
-    func requestAccessToken(with code: String) {
-        let url = "https://github.com/login/oauth/access_token"
-        
-        let parameters = ["client_id": client_id,
-                          "client_secret": client_secret,
-                          "code": code]
-        
-        let headers: HTTPHeaders = ["Accept": "application/json"]
-        
-        AF.request(url, method: .post, parameters: parameters, headers: headers)
-            .responseDecodable(of: Authorization.self) { response in
-            switch response.result {
-            case let .success(data):
-                print(data)
-                let accessToken = data.access_token
-                
-                if let accessToken {
-                    if KeychainManager.shared.getItem(key: "accessToken") == nil {
-                        let _ = KeychainManager.shared.addItem(key: "accessToken", pwd: accessToken)
-                    } else {
-                        let _ = KeychainManager.shared.updateItem(value: accessToken, key: "accessToken")
-                    }
-                }
-                
-            case let .failure(error):
-                print(error)
-            }
-        }
-    }
-    
-    func logout() {
-        let _ = KeychainManager.shared.deleteItem(key: "accessToken")
-    }
-    
     // MARK: - 프로필
     
-    func getUser() {
+    func getUser() -> Observable<Any> {
         let url = "https://api.github.com/user"
         let accessToken = KeychainManager.shared.getItem(key: "accessToken")
         
         let headers: HTTPHeaders = ["Accept": "application/vnd.github+json",
                                     "Authorization": "token \(accessToken as! String)"]
+        
+        return Observable.create { (observer) -> Disposable in
 
-        AF.request(url, method: .get, parameters: [:], headers: headers)
-            .responseDecodable(of: UserResponse.self) { response in
-            switch response.result {
-            case .success(let data):
-                print(data)
-                print(data.bio ?? "")
-                print(data.avatarUrl ?? "")
-            case .failure(let error):
-                print(error)
-            }
+            AF.request(url, method: .get, parameters: [:], headers: headers)
+                .responseDecodable(of: UserResponse.self) { response in
+                    switch response.result {
+                    case .success(let data):
+                        let userInfo = User(id: data.login ?? "No ID", name: data.name ?? "No Name", imageURL: data.avatarUrl)
+                        observer.onNext(userInfo)
+                        observer.onCompleted()
+                    case .failure(let error):
+                        observer.onError(error)
+                    }
+                }
+
+            return Disposables.create()
         }
     }
     
-    func getRepos() {
-        let url = "https://api.github.com/users/Minkyeong-Ko/starred"   // temp url
+    func getRepos(of userName: String) -> Observable<Any> {
+        let url = "https://api.github.com/users/\(userName)/starred"   
 
         let accessToken = KeychainManager.shared.getItem(key: "accessToken")
         
-        guard let accessToken else { return }
+        // TODO: - 안전한 방법 찾기
+//        guard let accessToken else { return }
         
         let headers: HTTPHeaders = ["Accept": "application/vnd.github.v3+json",
                                     "Authorization": "token \(accessToken as! String)"]
         
-        AF.request(url, method: .get, parameters: [:], headers: headers)
-            .responseDecodable(of: [RepositoryResponse].self) { response in
-                switch response.result {
-                case .success(let data):
-//                    completion(data)
-                    print(data)
-                    data.forEach {
-                        print("-------------")
-                        print($0.fullName ?? "")
-                        print($0.descriptionField ?? "")
-                        print($0.stargazersCount ?? "")
-                        print($0.topics ?? "")
+        return Observable.create { (observer) -> Disposable in
+
+            AF.request(url, method: .get, parameters: [:], headers: headers)
+                .responseDecodable(of: [RepositoryResponse].self) { response in
+                    switch response.result {
+                    case .success(let data):
+                        let result = data.map {
+                            Repository(fullName: $0.fullName ?? "No Name",
+                                       descriptionField: $0.descriptionField ?? "No Description",
+                                       stargazersCount: String($0.stargazersCount ?? 0))
+                        }
+                        observer.onNext(result)
+                        observer.onCompleted()
+                    case .failure(let error):
+                        observer.onError(error)
                     }
-                case .failure(let error):
-                    print(error)
                 }
-            }
+
+            return Disposables.create()
+        }
     }
     
     // MARK: - 레포지터리 검색
@@ -130,7 +94,6 @@ class GithubManager {
             .responseDecodable(of: SearchRepositoriesResponse.self) { response in
                 switch response.result {
                 case .success(let data):
-//                    completion(data)
                     print(data)
                     data.items?.forEach{
                         print($0.fullName ?? "")
