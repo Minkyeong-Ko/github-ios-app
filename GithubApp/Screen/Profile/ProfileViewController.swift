@@ -34,6 +34,7 @@ final class ProfileViewController: BaseViewController {
                                           descriptionField: "Reactive Programming in Swift",
                                           stargazersCount: "129")
     
+    private var tableViewDataSource: [Repository] = []
     
     // MARK: - UI Properties
     
@@ -93,6 +94,7 @@ final class ProfileViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupRx()
         setAskLoginButton()
         setDelegation()
         
@@ -139,22 +141,75 @@ final class ProfileViewController: BaseViewController {
     
     func setAskLoginButton() {
         let button = askLoginStackView.arrangedSubviews[1] as! UIButton
-        button.addTarget(self, action: #selector(testLoginSuccess), for: .touchUpInside)
+        button.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
     }
     
-    @objc func testLoginSuccess() {
-        // TODO: - 로그인 요청
-        // TODO: - 로그인 성공하면 view 없애기
-        // TODO: - 로그인 성공하면 유저 프로필 업데이트
-        // TODO: - 로그인 성공하면 테이블 뷰 data 업데이트
+    @objc func loginButtonTapped() {
+        LoginManager.shared.requestCode()
+    }
+    
+    private func showAskLoginView() {
+        askLoginBackgroundView.alpha = 1.0
+    }
+    
+    private func hideAskLoginView() {
         askLoginBackgroundView.alpha = 0.0
     }
-    
-    // TODO: - 로그아웃 시 다시 askLoginBackgroundView 보이기
     
     private func setDelegation() {
         repositoryTableView.delegate = self
         repositoryTableView.dataSource = self
+    }
+    
+    private func setupRx() {
+        let _ = LoginManager.shared.loginStatusSubject
+            .subscribe(onNext: { loginStatus in
+                switch loginStatus {
+                case .inProgress:
+                    print("login process")
+                case .loggedIn:
+                    self.hideAskLoginView()
+                    self.updateUserData()
+                case .loggedOut:
+                    self.showAskLoginView()
+                }
+            })
+    }
+    
+    private func updateUserData() {
+        let _ = GithubManager.shared.getUser().subscribe({ [weak self] response in
+            guard self != nil else {
+                return
+            }
+            
+            switch response {
+            case .next(let data):
+                print(data)
+                let user: User = data as! User
+                self?.profileView.config(image: UIImage(systemName: "circle") ?? UIImage(),
+                                         name: user.name)
+                let _ = GithubManager.shared.getRepos(of: user.id).subscribe( { response in
+                    switch response {
+                    case .next(let data):
+                        self?.updateRepositoriesData(of: data as! [Repository])
+                    case .error(let error):
+                        print(error)
+                    case .completed:
+                        break
+                    }
+                })
+            case .error(let error):
+                print(error)
+            case .completed:
+                break
+            }
+            
+        }).disposed(by: GithubManager.shared.disposeBag)
+    }
+    
+    private func updateRepositoriesData(of data: [Repository]) {
+        tableViewDataSource = data
+        repositoryTableView.reloadData()
     }
 }
 
@@ -162,14 +217,12 @@ final class ProfileViewController: BaseViewController {
 
 extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // TODO: - 레포지터리 개수 받아와서 적용
-        return 100
+        return tableViewDataSource.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = RepositoryTableViewCell()
-        // TODO: - 실제 datasource 반영
-        cell.configure(repositoryInfo: dummy)
+        cell.configure(repositoryInfo: tableViewDataSource[indexPath.row])
         return cell
     }
 }
