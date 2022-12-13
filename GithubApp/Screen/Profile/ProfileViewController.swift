@@ -143,8 +143,14 @@ final class ProfileViewController: BaseViewController {
     }
     
     @objc func testLoginSuccess() {
+        // TODO: - 로그인 요청
+        // TODO: - 로그인 성공하면 view 없애기
+        // TODO: - 로그인 성공하면 유저 프로필 업데이트
+        // TODO: - 로그인 성공하면 테이블 뷰 data 업데이트
         askLoginBackgroundView.alpha = 0.0
     }
+    
+    // TODO: - 로그아웃 시 다시 askLoginBackgroundView 보이기
     
     private func setDelegation() {
         repositoryTableView.delegate = self
@@ -156,11 +162,13 @@ final class ProfileViewController: BaseViewController {
 
 extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        // TODO: - 레포지터리 개수 받아와서 적용
         return 100
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = RepositoryTableViewCell()
+        // TODO: - 실제 datasource 반영
         cell.configure(repositoryInfo: dummy)
         return cell
     }

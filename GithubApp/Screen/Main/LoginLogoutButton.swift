@@ -45,6 +45,9 @@ final class LoginLogoutButton: UIButton {
     func login() {
         isLogin = true
         toggleButtonTitle()
+        // TODO: - 로그인 요청
+        // TODO: - 로그인 성공하면 ProfileViewController에 알리기
+        // TODO: - 로그인 성공하면 버튼 토글
         print("로그인")
     }
     
@@ -52,6 +55,7 @@ final class LoginLogoutButton: UIButton {
         isLogin = false
         toggleButtonTitle()
         print("로그아웃")
+        // TODO: - 로그아웃
     }
     
     func toggleButtonTitle() {
