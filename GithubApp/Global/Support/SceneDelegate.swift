@@ -51,7 +51,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let url = URLContexts.first?.url {
             if url.absoluteString.starts(with: "githubapp://") {
                 if let code = url.absoluteString.split(separator: "=").last.map({ String($0) }) {
-                    GithubManager.shared.requestAccessToken(with: code)
+                    LoginManager.shared.requestAccessToken(with: code)
                 }
             }
         }
