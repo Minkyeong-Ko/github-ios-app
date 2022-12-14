@@ -141,5 +141,6 @@ final class SearchViewController: BaseViewController {
                 self.tableViewDataSource = array
                 self.repositoryTableView.reloadData()
             })
+            .disposed(by: GithubManager.shared.disposeBag)
     }
 }

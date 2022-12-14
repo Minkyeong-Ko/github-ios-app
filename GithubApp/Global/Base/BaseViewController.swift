@@ -98,6 +98,7 @@ class BaseViewController: UIViewController {
                     self.toggleLoginLogoutButton()
                 }
             })
+            .disposed(by: GithubManager.shared.disposeBag)
     }
     
     private func toggleLoginLogoutButton() {

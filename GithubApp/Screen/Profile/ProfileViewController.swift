@@ -155,11 +155,13 @@ final class ProfileViewController: BaseViewController {
                     self.showAskLoginView()
                 }
             })
+            .disposed(by: GithubManager.shared.disposeBag)
         
         let _ = GithubManager.shared.repositoriesSubject
             .subscribe(onNext: { array in
                 self.redrawTableView(of: array)
             })
+            .disposed(by: GithubManager.shared.disposeBag)
     }
     
     private func setDelegation() {
