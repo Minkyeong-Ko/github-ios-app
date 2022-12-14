@@ -13,6 +13,7 @@ import RxSwift
 
 class GithubManager {
     // MARK: - Rx
+    let repositoriesSubject = BehaviorSubject<[Repository]>(value: [])
     let disposeBag = DisposeBag()
     // TODO: - dispose 처리 시점
     
@@ -48,20 +49,31 @@ class GithubManager {
         }
     }
     
-    func getRepos(of userName: String) -> Observable<Any> {
+    func getProfileImage(from imageURL: String) -> Observable<UIImage?> {
+        return Observable.create { (observer) -> Disposable in
+            DispatchQueue.global().async {
+                if let url = URL(string: imageURL), let data = try? Data(contentsOf: url) {
+                    let image = UIImage(data: data)
+                    observer.onNext(image)
+                    observer.onCompleted()
+                }
+            }  
+            
+            return Disposables.create()
+        }
+    }
+    
+    func getRepos(of userName: String) {
         let url = "https://api.github.com/users/\(userName)/starred"   
 
         let accessToken = KeychainManager.shared.getItem(key: "accessToken")
         
-        // TODO: - 안전한 방법 찾기
-//        guard let accessToken else { return }
+        guard let accessToken else { return }
         
         let headers: HTTPHeaders = ["Accept": "application/vnd.github.v3+json",
                                     "Authorization": "token \(accessToken as! String)"]
         
-        return Observable.create { (observer) -> Disposable in
-
-            AF.request(url, method: .get, parameters: [:], headers: headers)
+        AF.request(url, method: .get, parameters: [:], headers: headers)
                 .responseDecodable(of: [RepositoryResponse].self) { response in
                     switch response.result {
                     case .success(let data):
@@ -70,15 +82,11 @@ class GithubManager {
                                        descriptionField: $0.descriptionField ?? "No Description",
                                        stargazersCount: String($0.stargazersCount ?? 0))
                         }
-                        observer.onNext(result)
-                        observer.onCompleted()
+                        self.repositoriesSubject.onNext(result)
                     case .failure(let error):
-                        observer.onError(error)
+                        self.repositoriesSubject.onError(error)
                     }
                 }
-
-            return Disposables.create()
-        }
     }
     
     // MARK: - 레포지터리 검색
@@ -107,8 +115,8 @@ class GithubManager {
     }
     
     // MARK: - Star / Unstar 업데이트
-    public func unstarRepository() {
-        let url = "https://api.github.com/user/starred/JaeYeopHan/Interview_Question_for_Beginner"
+    public func unstarRepository(repo: String) {
+        let url = "https://api.github.com/user/starred/\(repo)"
         let accessToken = KeychainManager.shared.getItem(key: "accessToken")
         
         let headers: HTTPHeaders = ["Accept": "application/vnd.github.v3+json",
@@ -120,8 +128,8 @@ class GithubManager {
             }
     }
     
-    public func starRepository() {
-        let url = "https://api.github.com/user/starred/JaeYeopHan/Interview_Question_for_Beginner"
+    public func starRepository(repo: String) {
+        let url = "https://api.github.com/user/starred/\(repo)"
         let accessToken = KeychainManager.shared.getItem(key: "accessToken")
         
         let headers: HTTPHeaders = ["Accept": "application/vnd.github.v3+json",

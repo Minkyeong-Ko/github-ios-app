@@ -30,11 +30,8 @@ final class ProfileViewController: BaseViewController {
     
     // MARK: - Properties
     
-    private let dummy = Repository(fullName: "ReactiveX/RxSwift",
-                                          descriptionField: "Reactive Programming in Swift",
-                                          stargazersCount: "129")
-    
     private var tableViewDataSource: [Repository] = []
+    private var user: User?
     
     // MARK: - UI Properties
     
@@ -137,6 +134,12 @@ final class ProfileViewController: BaseViewController {
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        if let id = user?.id {
+            GithubManager.shared.getRepos(of: id)
+        }
+    }
+    
     // MARK: - Func
     
     func setAskLoginButton() {
@@ -149,11 +152,11 @@ final class ProfileViewController: BaseViewController {
     }
     
     private func showAskLoginView() {
-        askLoginBackgroundView.alpha = 1.0
+        askLoginBackgroundView.isHidden = false
     }
     
     private func hideAskLoginView() {
-        askLoginBackgroundView.alpha = 0.0
+        askLoginBackgroundView.isHidden = true
     }
     
     private func setDelegation() {
@@ -174,6 +177,11 @@ final class ProfileViewController: BaseViewController {
                     self.showAskLoginView()
                 }
             })
+        
+        let _ = GithubManager.shared.repositoriesSubject
+            .subscribe(onNext: { array in
+                self.redrawTableView(of: array)
+            })
     }
     
     private func updateUserData() {
@@ -186,18 +194,10 @@ final class ProfileViewController: BaseViewController {
             case .next(let data):
                 print(data)
                 let user: User = data as! User
-                self?.profileView.config(image: UIImage(systemName: "circle") ?? UIImage(),
+                self?.profileView.config(imageURL: user.imageURL ?? "",
                                          name: user.name)
-                let _ = GithubManager.shared.getRepos(of: user.id).subscribe( { response in
-                    switch response {
-                    case .next(let data):
-                        self?.updateRepositoriesData(of: data as! [Repository])
-                    case .error(let error):
-                        print(error)
-                    case .completed:
-                        break
-                    }
-                })
+                let _ = GithubManager.shared.getRepos(of: user.id)
+                self?.user = user
             case .error(let error):
                 print(error)
             case .completed:
@@ -207,7 +207,8 @@ final class ProfileViewController: BaseViewController {
         }).disposed(by: GithubManager.shared.disposeBag)
     }
     
-    private func updateRepositoriesData(of data: [Repository]) {
+    
+    private func redrawTableView(of data: [Repository]) {
         tableViewDataSource = data
         repositoryTableView.reloadData()
     }
@@ -222,6 +223,7 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = RepositoryTableViewCell()
+        cell.repository = tableViewDataSource[indexPath.row]
         cell.configure(repositoryInfo: tableViewDataSource[indexPath.row])
         return cell
     }

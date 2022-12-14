@@ -7,6 +7,8 @@
 
 import UIKit
 
+import SnapKit
+
 private enum Size {
     // view
     static let horizontalPadding = 20.0
@@ -37,7 +39,7 @@ final class SearchViewController: BaseViewController {
     
     private let dummy = Repository(fullName: "ReactiveX/RxSwift",
                                           descriptionField: "Reactive Programming in Swift",
-                                          stargazersCount: "129")
+                                   stargazersCount: "129")
     
     // MARK: - UI Properties
     
