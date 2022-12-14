@@ -37,7 +37,7 @@ final class SearchViewController: BaseViewController {
     
     // MARK: - Properties
     
-    private var tableViewDataSource: [Repository] = []
+    var tableViewDataSource: [Repository] = []
     
     // MARK: - UI Properties
     
@@ -50,7 +50,7 @@ final class SearchViewController: BaseViewController {
     }()
     
     private let searchIcon: UIImageView = {
-        let view = UIImageView(image: UIImage(systemName: "magnifyingglass"))
+        let view = UIImageView(image: ImageLiteral.searchSymbol)
         view.tintColor = .black
         return view
     }()
@@ -84,7 +84,7 @@ final class SearchViewController: BaseViewController {
     }()
     
     // MARK: - Life Cycle
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -136,55 +136,10 @@ final class SearchViewController: BaseViewController {
     }
     
     private func setupRx() {
-        
         let _ = GithubManager.shared.searchRepositoriesSubject
             .subscribe(onNext: { array in
                 self.tableViewDataSource = array
                 self.repositoryTableView.reloadData()
             })
-    }
-}
-
-// MARK: - SearchViewController + UITableViewDelegate, UITableViewDataSource
-
-extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tableViewDataSource.count
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = RepositoryTableViewCell()
-        cell.configure(repositoryInfo: tableViewDataSource[indexPath.row])
-        return cell
-    }
-}
-
-// MARK: - SearchViewController (hideKeyboardWhenTappedAround)
-
-extension SearchViewController {
-    func hideKeyboardWhenTappedAround() {
-        let tap = UITapGestureRecognizer(target: self, action: #selector(SearchViewController.dismissKeyboard))
-        tap.cancelsTouchesInView = false
-        view.addGestureRecognizer(tap)
-    }
-    
-    @objc func dismissKeyboard() {
-        view.endEditing(true)
-    }
-}
-
-// MARK: - SearchViewController + UITextFieldDelegate
-
-extension SearchViewController: UITextFieldDelegate {
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        
-        hideKeyboardWhenTappedAround()
-        
-        textField.resignFirstResponder()
-        
-        let text = textField.text ?? ""
-        GithubManager.shared.searchRepoTest(with: text.replacingOccurrences(of: " ", with: ""))
-        
-        return true
     }
 }

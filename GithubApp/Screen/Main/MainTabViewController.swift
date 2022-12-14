@@ -21,7 +21,8 @@ private enum TabBarLiteral: String {
 }
 
 final class MainTabViewController: UITabBarController {
-    // MARK: - Properties
+    
+    // MARK: - UI Properties
     
     let loginLogoutButton = LoginLogoutButton()
     
@@ -32,23 +33,29 @@ final class MainTabViewController: UITabBarController {
         render()
         configUI()
     }
+    
+    func render() {
+        setTabViewControllers()
+    }
 
     func configUI() {
-        setTabViewControllers()
         tabBar.tintColor = .white
         view.backgroundColor = .systemBackground
         tabBar.barTintColor = .githubBlue
     }
 
-    func render() {}
-
     // MARK: - Func
 
     private func setTabViewControllers() {
         let searchTab = SearchViewController()
-        searchTab.tabBarItem = UITabBarItem(title: TabBarLiteral.search(), image: ImageLiteral.searchTab, selectedImage: ImageLiteral.searchTab)
+        searchTab.tabBarItem = UITabBarItem(title: TabBarLiteral.search(),
+                                            image: ImageLiteral.searchTab,
+                                            selectedImage: ImageLiteral.searchTab)
+        
         let profileTab = ProfileViewController()
-        profileTab.tabBarItem = UITabBarItem(title: TabBarLiteral.profile(), image: ImageLiteral.profileTab, selectedImage: ImageLiteral.profileTabSelected)
+        profileTab.tabBarItem = UITabBarItem(title: TabBarLiteral.profile(),
+                                             image: ImageLiteral.profileTab,
+                                             selectedImage: ImageLiteral.profileTabSelected)
         
         setViewControllers(
             [searchTab, profileTab],

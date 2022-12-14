@@ -51,8 +51,6 @@ class BaseViewController: UIViewController {
     }
 
     func render() {
-        // auto layout 관련 코드들 모아놓는 곳
-        
         view.addSubview(navigationBackgroundView)
         navigationBackgroundView.backgroundColor = .githubBlue
         navigationBackgroundView.snp.makeConstraints { make in
@@ -75,10 +73,10 @@ class BaseViewController: UIViewController {
     }
 
     func configUI() {
-        // UI 관련 코드들 모아놓는 곳
-        
         view.backgroundColor = .systemBackground
     }
+    
+    // MARK: - Func
     
     private func getStatusBarHeight() {
         let window = UIApplication.shared.windows.first

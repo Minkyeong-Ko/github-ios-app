@@ -12,10 +12,13 @@ import Alamofire
 import RxSwift
 
 class GithubManager {
+    
     // MARK: - Rx
+    
     let repositoriesSubject = BehaviorSubject<[Repository]>(value: [])
     let searchRepositoriesSubject = BehaviorSubject<[Repository]>(value: [])
     let disposeBag = DisposeBag()
+    
     // TODO: - dispose 처리 시점
     
     // MARK: - Shared
@@ -23,8 +26,7 @@ class GithubManager {
     
     private init() {}
     
-    // MARK: - 프로필
-    
+    // 유저 정보
     func getUser() -> Observable<Any> {
         let url = "https://api.github.com/user"
         let accessToken = KeychainManager.shared.getItem(key: "accessToken")
@@ -38,9 +40,11 @@ class GithubManager {
                 .responseDecodable(of: UserResponse.self) { response in
                     switch response.result {
                     case .success(let data):
-                        let userInfo = User(id: data.login ?? "No ID", name: data.name ?? "No Name", imageURL: data.avatarUrl)
-                        observer.onNext(userInfo)
-                        observer.onCompleted()
+                        if let id = data.login, let name = data.name, let imageURL = data.avatarUrl {
+                            let userInfo = User(id: id, name: name, imageURL: imageURL)
+                            observer.onNext(userInfo)
+                            observer.onCompleted()
+                        }
                     case .failure(let error):
                         observer.onError(error)
                     }
@@ -50,6 +54,7 @@ class GithubManager {
         }
     }
     
+    // 유저 이미지
     func getProfileImage(from imageURL: String) -> Observable<UIImage?> {
         return Observable.create { (observer) -> Disposable in
             DispatchQueue.global().async {
@@ -64,6 +69,7 @@ class GithubManager {
         }
     }
     
+    // 유저가 Star 저장한 레포지터리
     func getRepos(of userName: String) {
         let url = "https://api.github.com/users/\(userName)/starred"   
 
@@ -79,9 +85,13 @@ class GithubManager {
                     switch response.result {
                     case .success(let data):
                         let result = data.map {
-                            Repository(fullName: $0.fullName ?? "No Name",
-                                       descriptionField: $0.descriptionField ?? "No Description",
-                                       stargazersCount: String($0.stargazersCount ?? 0))
+                            if let fullName = $0.fullName, let description = $0.descriptionField, let starNumber = $0.stargazersCount {
+                                return Repository(fullName: fullName,
+                                           descriptionField: description,
+                                           stargazersCount: String(starNumber))
+                            } else {
+                                return Repository(fullName: "", descriptionField: "", stargazersCount: "")
+                            }
                         }
                         self.repositoriesSubject.onNext(result)
                     case .failure(let error):
@@ -90,8 +100,7 @@ class GithubManager {
                 }
     }
     
-    // MARK: - 레포지터리 검색
-    
+    // 레포지터리 검색
     func searchRepoTest(with text: String) {
         let url = "https://api.github.com/search/repositories?q=\(text)&page=1"
         let accessToken = KeychainManager.shared.getItem(key: "accessToken")
@@ -115,9 +124,13 @@ class GithubManager {
                 case .success(let data):
                     print(data)
                     let result = data.items?.map {
-                        Repository(fullName: $0.fullName ?? "No Name",
-                                   descriptionField: $0.descriptionField ?? "No Description",
-                                   stargazersCount: String($0.stargazersCount ?? 0))
+                        if let fullName = $0.fullName, let description = $0.descriptionField, let starNumber = $0.stargazersCount {
+                            return Repository(fullName: fullName,
+                                       descriptionField: description,
+                                       stargazersCount: String(starNumber))
+                        } else {
+                            return Repository(fullName: "", descriptionField: "", stargazersCount: "")
+                        }
                     }
                     if let result {
                         self.searchRepositoriesSubject.onNext(result)
@@ -128,7 +141,7 @@ class GithubManager {
             }
     }
     
-    // MARK: - Star / Unstar 업데이트
+    // 레포지터리 Star
     public func unstarRepository(repo: String) {
         let url = "https://api.github.com/user/starred/\(repo)"
         let accessToken = KeychainManager.shared.getItem(key: "accessToken")
@@ -142,6 +155,7 @@ class GithubManager {
             }
     }
     
+    // 레포지터리 Unstar
     public func starRepository(repo: String) {
         let url = "https://api.github.com/user/starred/\(repo)"
         let accessToken = KeychainManager.shared.getItem(key: "accessToken")

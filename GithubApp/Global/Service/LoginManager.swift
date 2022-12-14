@@ -17,19 +17,25 @@ enum LoginStatus {
 }
 
 class LoginManager {
+    
     // MARK: - Rx
+    
     let loginStatusSubject = BehaviorSubject<LoginStatus>(value: .loggedOut)
     
     // MARK: - Shared
+    
     static let shared = LoginManager()
     
     // MARK: - Life Cycle
+    
     private init() {}
     
     // MARK: - Properties
+    
     let client_id = Bundle.main.clientID
     let client_secret = Bundle.main.clientSecret
     
+    // 임시 코드 요청
     func requestCode() {
         loginStatusSubject.onNext(.inProgress)
         let scope = "repo,user"
@@ -39,6 +45,7 @@ class LoginManager {
         }
     }
 
+    // AccessToken 요청
     func requestAccessToken(with code: String) {
         let url = "https://github.com/login/oauth/access_token"
 
@@ -66,6 +73,7 @@ class LoginManager {
         }
     }
 
+    // 로그아웃
     func logout() {
         let _ = KeychainManager.shared.deleteItem(key: "accessToken")
         loginStatusSubject.onNext(.loggedOut)

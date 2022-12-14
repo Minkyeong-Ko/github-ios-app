@@ -29,6 +29,9 @@
 		218B919829483E2E009E6FFE /* RepositoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218B919729483E2E009E6FFE /* RepositoryTableViewCell.swift */; };
 		218B919A29483E63009E6FFE /* BaseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218B919929483E63009E6FFE /* BaseTableViewCell.swift */; };
 		218B919C2948A10E009E6FFE /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218B919B2948A10E009E6FFE /* UserProfileView.swift */; };
+		218D58EA2949E09D004EE4B6 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218D58E92949E09D004EE4B6 /* User.swift */; };
+		218D58EC2949E0B0004EE4B6 /* SearchViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218D58EB2949E0B0004EE4B6 /* SearchViewController+Extension.swift */; };
+		218D58EE2949E274004EE4B6 /* ProfileViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218D58ED2949E274004EE4B6 /* ProfileViewController+Extension.swift */; };
 		21AF7D2429448FEA00510F32 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AF7D2329448FEA00510F32 /* UIColor+Extension.swift */; };
 		21E92AE12942B04B0034357B /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 21E92AE02942B04B0034357B /* Alamofire */; };
 		21E92AE32942B0F00034357B /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E92AE22942B0F00034357B /* KeychainManager.swift */; };
@@ -67,6 +70,9 @@
 		218B919729483E2E009E6FFE /* RepositoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryTableViewCell.swift; sourceTree = "<group>"; };
 		218B919929483E63009E6FFE /* BaseTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableViewCell.swift; sourceTree = "<group>"; };
 		218B919B2948A10E009E6FFE /* UserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
+		218D58E92949E09D004EE4B6 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		218D58EB2949E0B0004EE4B6 /* SearchViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SearchViewController+Extension.swift"; sourceTree = "<group>"; };
+		218D58ED2949E274004EE4B6 /* ProfileViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProfileViewController+Extension.swift"; sourceTree = "<group>"; };
 		21AF7D2329448FEA00510F32 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		21E92AE22942B0F00034357B /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
 		21E92AE4294310540034357B /* UserResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserResponse.swift; sourceTree = "<group>"; };
@@ -103,6 +109,7 @@
 			isa = PBXGroup;
 			children = (
 				21839E1229444D5500307F63 /* SearchViewController.swift */,
+				218D58EB2949E0B0004EE4B6 /* SearchViewController+Extension.swift */,
 			);
 			path = Search;
 			sourceTree = "<group>";
@@ -111,6 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				21839E1029444D4C00307F63 /* ProfileViewController.swift */,
+				218D58ED2949E274004EE4B6 /* ProfileViewController+Extension.swift */,
 				218B919B2948A10E009E6FFE /* UserProfileView.swift */,
 			);
 			path = Profile;
@@ -154,6 +162,7 @@
 			children = (
 				218B919729483E2E009E6FFE /* RepositoryTableViewCell.swift */,
 				218B919529483DBA009E6FFE /* Repository.swift */,
+				218D58E92949E09D004EE4B6 /* User.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -205,7 +214,6 @@
 				21FD54DA29416AE100A26685 /* Service */,
 				21FD54D929416ACE00A26685 /* Support */,
 				21FD54DC29416AE700A26685 /* Base */,
-				21FD54DD29416AEF00A26685 /* UIComponent */,
 				21FD54DB29416AE400A26685 /* Resource */,
 			);
 			path = Global;
@@ -274,13 +282,6 @@
 				218B919929483E63009E6FFE /* BaseTableViewCell.swift */,
 			);
 			path = Base;
-			sourceTree = "<group>";
-		};
-		21FD54DD29416AEF00A26685 /* UIComponent */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = UIComponent;
 			sourceTree = "<group>";
 		};
 		21FD54DE29416B5000A26685 /* Main */ = {
@@ -382,7 +383,9 @@
 				21839E0D29444C3900307F63 /* ImageLiteral.swift in Sources */,
 				21E92AF72943245B0034357B /* SearchRepositoriesItem.swift in Sources */,
 				21E92AFB294324880034357B /* SearchRepositoriesResponse.swift in Sources */,
+				218D58EC2949E0B0004EE4B6 /* SearchViewController+Extension.swift in Sources */,
 				21839E092944258B00307F63 /* MainTabViewController.swift in Sources */,
+				218D58EA2949E09D004EE4B6 /* User.swift in Sources */,
 				2188A7F429436B5A00161145 /* RepositoryOrganization.swift in Sources */,
 				2188A7EA2943569C00161145 /* BaseViewController.swift in Sources */,
 				218B919629483DBA009E6FFE /* Repository.swift in Sources */,
@@ -397,6 +400,7 @@
 				21839E1329444D5500307F63 /* SearchViewController.swift in Sources */,
 				218B919C2948A10E009E6FFE /* UserProfileView.swift in Sources */,
 				21E92AE5294310540034357B /* UserResponse.swift in Sources */,
+				218D58EE2949E274004EE4B6 /* ProfileViewController+Extension.swift in Sources */,
 				214B4BAB2948FCC300273AB8 /* LoginManager.swift in Sources */,
 				2188A7F229436B4400161145 /* RepositoryLisense.swift in Sources */,
 				21FD54C32941687400A26685 /* SceneDelegate.swift in Sources */,

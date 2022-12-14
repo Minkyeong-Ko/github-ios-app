@@ -12,9 +12,3 @@ struct Repository {
     let descriptionField: String
     let stargazersCount: String
 }
-
-struct User {
-    let id: String
-    let name: String
-    let imageURL: String?
-}

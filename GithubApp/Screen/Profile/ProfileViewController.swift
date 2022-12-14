@@ -30,7 +30,7 @@ final class ProfileViewController: BaseViewController {
     
     // MARK: - Properties
     
-    private var tableViewDataSource: [Repository] = []
+    var tableViewDataSource: [Repository] = []
     private var user: User?
     
     // MARK: - UI Properties
@@ -40,14 +40,12 @@ final class ProfileViewController: BaseViewController {
     private let repositoryTableView: UITableView = {
         let tableView = UITableView()
         tableView.rowHeight = Size.tableViewRowHeight
-        
         return tableView
     }()
     
     private let askLoginBackgroundView: UIView = {
         let view = UIView()
         view.backgroundColor = .systemBackground
-        
         return view
     }()
     
@@ -86,7 +84,7 @@ final class ProfileViewController: BaseViewController {
         return label
     }()
     
-    // MARK: - Properties
+    // MARK: - Life Cycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -142,34 +140,14 @@ final class ProfileViewController: BaseViewController {
     
     // MARK: - Func
     
-    func setAskLoginButton() {
-        let button = askLoginStackView.arrangedSubviews[1] as! UIButton
-        button.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
-    }
-    
-    @objc func loginButtonTapped() {
-        LoginManager.shared.requestCode()
-    }
-    
-    private func showAskLoginView() {
-        askLoginBackgroundView.isHidden = false
-    }
-    
-    private func hideAskLoginView() {
-        askLoginBackgroundView.isHidden = true
-    }
-    
-    private func setDelegation() {
-        repositoryTableView.delegate = self
-        repositoryTableView.dataSource = self
-    }
+    // setup
     
     private func setupRx() {
         let _ = LoginManager.shared.loginStatusSubject
             .subscribe(onNext: { loginStatus in
                 switch loginStatus {
                 case .inProgress:
-                    print("login process")
+                    print("In login process")
                 case .loggedIn:
                     self.hideAskLoginView()
                     self.updateUserData()
@@ -182,6 +160,30 @@ final class ProfileViewController: BaseViewController {
             .subscribe(onNext: { array in
                 self.redrawTableView(of: array)
             })
+    }
+    
+    private func setDelegation() {
+        repositoryTableView.delegate = self
+        repositoryTableView.dataSource = self
+    }
+    
+    func setAskLoginButton() {
+        let button = askLoginStackView.arrangedSubviews[1] as! UIButton
+        button.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
+    }
+    
+    // Event
+    
+    @objc func loginButtonTapped() {
+        LoginManager.shared.requestCode()
+    }
+    
+    private func showAskLoginView() {
+        askLoginBackgroundView.isHidden = false
+    }
+    
+    private func hideAskLoginView() {
+        askLoginBackgroundView.isHidden = true
     }
     
     private func updateUserData() {
@@ -207,24 +209,8 @@ final class ProfileViewController: BaseViewController {
         }).disposed(by: GithubManager.shared.disposeBag)
     }
     
-    
     private func redrawTableView(of data: [Repository]) {
         tableViewDataSource = data
         repositoryTableView.reloadData()
-    }
-}
-
-// MARK: - ProfileViewController + UITableViewDelegate, UITableViewDataSource
-
-extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tableViewDataSource.count
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = RepositoryTableViewCell()
-        cell.repository = tableViewDataSource[indexPath.row]
-        cell.configure(repositoryInfo: tableViewDataSource[indexPath.row])
-        return cell
     }
 }
