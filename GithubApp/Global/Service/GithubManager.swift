@@ -22,10 +22,14 @@ class GithubManager {
     // TODO: - dispose 처리 시점
     
     // MARK: - Shared
+    
     static let shared = GithubManager()
     
     private init() {}
     
+    // MARK: - Properties
+    var currentUser: User?
+
     // 유저 정보
     func getUser() -> Observable<Any> {
         let url = "https://api.github.com/user"
@@ -42,6 +46,7 @@ class GithubManager {
                     case .success(let data):
                         if let id = data.login, let name = data.name, let imageURL = data.avatarUrl {
                             let userInfo = User(id: id, name: name, imageURL: imageURL)
+                            self.currentUser = userInfo
                             observer.onNext(userInfo)
                             observer.onCompleted()
                         }
@@ -85,13 +90,9 @@ class GithubManager {
                     switch response.result {
                     case .success(let data):
                         let result = data.map {
-                            if let fullName = $0.fullName, let description = $0.descriptionField, let starNumber = $0.stargazersCount {
-                                return Repository(fullName: fullName,
-                                           descriptionField: description,
-                                           stargazersCount: String(starNumber))
-                            } else {
-                                return Repository(fullName: "", descriptionField: "", stargazersCount: "")
-                            }
+                            Repository(fullName: $0.fullName!,
+                                       descriptionField: $0.descriptionField ?? "No Description",
+                                       stargazersCount: String($0.stargazersCount ?? 0))
                         }
                         self.repositoriesSubject.onNext(result)
                     case .failure(let error):
@@ -122,15 +123,10 @@ class GithubManager {
             .responseDecodable(of: SearchRepositoriesResponse.self) { response in
                 switch response.result {
                 case .success(let data):
-                    print(data)
                     let result = data.items?.map {
-                        if let fullName = $0.fullName, let description = $0.descriptionField, let starNumber = $0.stargazersCount {
-                            return Repository(fullName: fullName,
-                                       descriptionField: description,
-                                       stargazersCount: String(starNumber))
-                        } else {
-                            return Repository(fullName: "", descriptionField: "", stargazersCount: "")
-                        }
+                        Repository(fullName: $0.fullName!,
+                                   descriptionField: $0.descriptionField ?? "No Description",
+                                   stargazersCount: String($0.stargazersCount ?? 0))
                     }
                     if let result {
                         self.searchRepositoriesSubject.onNext(result)
@@ -150,8 +146,13 @@ class GithubManager {
                                     "Authorization": "token \(accessToken as! String)"]
         
         AF.request(url, method: .delete, parameters: [:], headers: headers)
-            .response { result in
-                print(result)
+            .response { response in
+                switch response.result {
+                case .success(_):
+                    self.getRepos(of: self.currentUser?.id ?? "")
+                case .failure(let error):
+                    print(error)
+                }
             }
     }
     
@@ -164,8 +165,13 @@ class GithubManager {
                                     "Authorization": "token \(accessToken as! String)"]
         
         AF.request(url, method: .put, parameters: [:], headers: headers)
-            .response { result in
-                print(result)
+            .response { response in
+                switch response.result {
+                case .success(_):
+                    self.getRepos(of: self.currentUser?.id ?? "")
+                case .failure(let error):
+                    print(error)
+                }
             }
     }
 }
