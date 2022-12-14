@@ -9,87 +9,62 @@ import Foundation
 import UIKit
 
 import Alamofire
+import RxSwift
 
 class GithubManager {
-    let client_id = Bundle.main.clientID
-    let client_secret = Bundle.main.clientSecret
+    // MARK: - Rx
+    let repositoriesSubject = BehaviorSubject<[Repository]>(value: [])
+    let disposeBag = DisposeBag()
+    // TODO: - dispose 처리 시점
     
+    // MARK: - Shared
     static let shared = GithubManager()
     
     private init() {}
     
-    // MARK: - 로그인 로그아웃
-    
-    func requestCode() {
-        print("client_id: \(client_id)")
-        print("client_secret: \(client_secret)")
-        
-        let scope = "repo,user"
-        let urlString = "https://github.com/login/oauth/authorize?client_id=\(client_id)&scope=\(scope)"
-        if let url = URL(string: urlString), UIApplication.shared.canOpenURL(url) {
-            UIApplication.shared.open(url)
-            // redirect to scene(_:openURLContexts:) if user authorized
-        }
-    }
-    
-    func requestAccessToken(with code: String) {
-        let url = "https://github.com/login/oauth/access_token"
-        
-        let parameters = ["client_id": client_id,
-                          "client_secret": client_secret,
-                          "code": code]
-        
-        let headers: HTTPHeaders = ["Accept": "application/json"]
-        
-        AF.request(url, method: .post, parameters: parameters, headers: headers)
-            .responseDecodable(of: Authorization.self) { response in
-            switch response.result {
-            case let .success(data):
-                print(data)
-                let accessToken = data.access_token
-                
-                if let accessToken {
-                    if KeychainManager.shared.getItem(key: "accessToken") == nil {
-                        let _ = KeychainManager.shared.addItem(key: "accessToken", pwd: accessToken)
-                    } else {
-                        let _ = KeychainManager.shared.updateItem(value: accessToken, key: "accessToken")
-                    }
-                }
-                
-            case let .failure(error):
-                print(error)
-            }
-        }
-    }
-    
-    func logout() {
-        let _ = KeychainManager.shared.deleteItem(key: "accessToken")
-    }
-    
     // MARK: - 프로필
     
-    func getUser() {
+    func getUser() -> Observable<Any> {
         let url = "https://api.github.com/user"
         let accessToken = KeychainManager.shared.getItem(key: "accessToken")
         
         let headers: HTTPHeaders = ["Accept": "application/vnd.github+json",
                                     "Authorization": "token \(accessToken as! String)"]
+        
+        return Observable.create { (observer) -> Disposable in
 
-        AF.request(url, method: .get, parameters: [:], headers: headers)
-            .responseDecodable(of: UserResponse.self) { response in
-            switch response.result {
-            case .success(let data):
-                print(data)
-                print(data.bio ?? "")
-                print(data.avatarUrl ?? "")
-            case .failure(let error):
-                print(error)
-            }
+            AF.request(url, method: .get, parameters: [:], headers: headers)
+                .responseDecodable(of: UserResponse.self) { response in
+                    switch response.result {
+                    case .success(let data):
+                        let userInfo = User(id: data.login ?? "No ID", name: data.name ?? "No Name", imageURL: data.avatarUrl)
+                        observer.onNext(userInfo)
+                        observer.onCompleted()
+                    case .failure(let error):
+                        observer.onError(error)
+                    }
+                }
+
+            return Disposables.create()
         }
     }
     
-    func getRepos() {
-        let url = "https://api.github.com/users/Minkyeong-Ko/starred"   // temp url
+    func getProfileImage(from imageURL: String) -> Observable<UIImage?> {
+        return Observable.create { (observer) -> Disposable in
+            DispatchQueue.global().async {
+                if let url = URL(string: imageURL), let data = try? Data(contentsOf: url) {
+                    let image = UIImage(data: data)
+                    observer.onNext(image)
+                    observer.onCompleted()
+                }
+            }  
+            
+            return Disposables.create()
+        }
+    }
+    
+    func getRepos(of userName: String) {
+        let url = "https://api.github.com/users/\(userName)/starred"   
 
         let accessToken = KeychainManager.shared.getItem(key: "accessToken")
         
@@ -99,22 +74,19 @@ class GithubManager {
                                     "Authorization": "token \(accessToken as! String)"]
         
         AF.request(url, method: .get, parameters: [:], headers: headers)
-            .responseDecodable(of: [RepositoryResponse].self) { response in
-                switch response.result {
-                case .success(let data):
-//                    completion(data)
-                    print(data)
-                    data.forEach {
-                        print("-------------")
-                        print($0.fullName ?? "")
-                        print($0.descriptionField ?? "")
-                        print($0.stargazersCount ?? "")
-                        print($0.topics ?? "")
+                .responseDecodable(of: [RepositoryResponse].self) { response in
+                    switch response.result {
+                    case .success(let data):
+                        let result = data.map {
+                            Repository(fullName: $0.fullName ?? "No Name",
+                                       descriptionField: $0.descriptionField ?? "No Description",
+                                       stargazersCount: String($0.stargazersCount ?? 0))
+                        }
+                        self.repositoriesSubject.onNext(result)
+                    case .failure(let error):
+                        self.repositoriesSubject.onError(error)
                     }
-                case .failure(let error):
-                    print(error)
                 }
-            }
     }
     
     // MARK: - 레포지터리 검색
@@ -130,7 +102,6 @@ class GithubManager {
             .responseDecodable(of: SearchRepositoriesResponse.self) { response in
                 switch response.result {
                 case .success(let data):
-//                    completion(data)
                     print(data)
                     data.items?.forEach{
                         print($0.fullName ?? "")
@@ -144,8 +115,8 @@ class GithubManager {
     }
     
     // MARK: - Star / Unstar 업데이트
-    public func unstarRepository() {
-        let url = "https://api.github.com/user/starred/JaeYeopHan/Interview_Question_for_Beginner"
+    public func unstarRepository(repo: String) {
+        let url = "https://api.github.com/user/starred/\(repo)"
         let accessToken = KeychainManager.shared.getItem(key: "accessToken")
         
         let headers: HTTPHeaders = ["Accept": "application/vnd.github.v3+json",
@@ -157,8 +128,8 @@ class GithubManager {
             }
     }
     
-    public func starRepository() {
-        let url = "https://api.github.com/user/starred/JaeYeopHan/Interview_Question_for_Beginner"
+    public func starRepository(repo: String) {
+        let url = "https://api.github.com/user/starred/\(repo)"
         let accessToken = KeychainManager.shared.getItem(key: "accessToken")
         
         let headers: HTTPHeaders = ["Accept": "application/vnd.github.v3+json",

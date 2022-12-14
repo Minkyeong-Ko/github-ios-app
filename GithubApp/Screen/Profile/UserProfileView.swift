@@ -7,6 +7,8 @@
 
 import UIKit
 
+import RxSwift
+
 private enum Size {
     static let userProfileHorizontalPadding = 30.0
     static let horizontalPadding = 20.0
@@ -50,8 +52,22 @@ final class UserProfileView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func config(image: UIImage, name: String) {
-        profileImage.image = image
+    public func config(imageURL: String, name: String) {
+        GithubManager.shared.getProfileImage(from: imageURL)
+            .observe(on: MainScheduler.instance)
+            .subscribe({ result in
+                switch result {
+                case let .next(image):
+                    self.profileImage.image = image
+
+                case let .error(err):
+                    print(err.localizedDescription)
+
+                case .completed:
+                    break
+                }
+            }).disposed(by: GithubManager.shared.disposeBag)
+        
         userNameLabel.text = name
     }
 }

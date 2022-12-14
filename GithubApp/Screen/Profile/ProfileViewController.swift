@@ -30,10 +30,8 @@ final class ProfileViewController: BaseViewController {
     
     // MARK: - Properties
     
-    private let dummy = Repository(fullName: "ReactiveX/RxSwift",
-                                          descriptionField: "Reactive Programming in Swift",
-                                          stargazersCount: "129")
-    
+    private var tableViewDataSource: [Repository] = []
+    private var user: User?
     
     // MARK: - UI Properties
     
@@ -93,6 +91,7 @@ final class ProfileViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupRx()
         setAskLoginButton()
         setDelegation()
         
@@ -135,20 +134,83 @@ final class ProfileViewController: BaseViewController {
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        if let id = user?.id {
+            GithubManager.shared.getRepos(of: id)
+        }
+    }
+    
     // MARK: - Func
     
     func setAskLoginButton() {
         let button = askLoginStackView.arrangedSubviews[1] as! UIButton
-        button.addTarget(self, action: #selector(testLoginSuccess), for: .touchUpInside)
+        button.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
     }
     
-    @objc func testLoginSuccess() {
-        askLoginBackgroundView.alpha = 0.0
+    @objc func loginButtonTapped() {
+        LoginManager.shared.requestCode()
+    }
+    
+    private func showAskLoginView() {
+        askLoginBackgroundView.isHidden = false
+    }
+    
+    private func hideAskLoginView() {
+        askLoginBackgroundView.isHidden = true
     }
     
     private func setDelegation() {
         repositoryTableView.delegate = self
         repositoryTableView.dataSource = self
+    }
+    
+    private func setupRx() {
+        let _ = LoginManager.shared.loginStatusSubject
+            .subscribe(onNext: { loginStatus in
+                switch loginStatus {
+                case .inProgress:
+                    print("login process")
+                case .loggedIn:
+                    self.hideAskLoginView()
+                    self.updateUserData()
+                case .loggedOut:
+                    self.showAskLoginView()
+                }
+            })
+        
+        let _ = GithubManager.shared.repositoriesSubject
+            .subscribe(onNext: { array in
+                self.redrawTableView(of: array)
+            })
+    }
+    
+    private func updateUserData() {
+        let _ = GithubManager.shared.getUser().subscribe({ [weak self] response in
+            guard self != nil else {
+                return
+            }
+            
+            switch response {
+            case .next(let data):
+                print(data)
+                let user: User = data as! User
+                self?.profileView.config(imageURL: user.imageURL ?? "",
+                                         name: user.name)
+                let _ = GithubManager.shared.getRepos(of: user.id)
+                self?.user = user
+            case .error(let error):
+                print(error)
+            case .completed:
+                break
+            }
+            
+        }).disposed(by: GithubManager.shared.disposeBag)
+    }
+    
+    
+    private func redrawTableView(of data: [Repository]) {
+        tableViewDataSource = data
+        repositoryTableView.reloadData()
     }
 }
 
@@ -156,12 +218,13 @@ final class ProfileViewController: BaseViewController {
 
 extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 100
+        return tableViewDataSource.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = RepositoryTableViewCell()
-        cell.configure(repositoryInfo: dummy)
+        cell.repository = tableViewDataSource[indexPath.row]
+        cell.configure(repositoryInfo: tableViewDataSource[indexPath.row])
         return cell
     }
 }

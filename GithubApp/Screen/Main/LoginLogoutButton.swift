@@ -13,7 +13,7 @@ final class LoginLogoutButton: UIButton {
     
     // MARK: - Properties
     
-    private var isLogin = false
+    var isLogin = false
     
     // MARK: - Life Cycle
 
@@ -44,14 +44,12 @@ final class LoginLogoutButton: UIButton {
     
     func login() {
         isLogin = true
-        toggleButtonTitle()
-        print("로그인")
+        LoginManager.shared.requestCode()
     }
     
     func logout() {
         isLogin = false
-        toggleButtonTitle()
-        print("로그아웃")
+        LoginManager.shared.logout()
     }
     
     func toggleButtonTitle() {

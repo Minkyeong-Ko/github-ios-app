@@ -43,6 +43,7 @@ class BaseViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupRx()
         getStatusBarHeight()
         
         render()
@@ -83,6 +84,26 @@ class BaseViewController: UIViewController {
         let window = UIApplication.shared.windows.first
         let top = window?.safeAreaInsets.top
         self.statusBarHeight = top!
+    }
+    
+    private func setupRx() {
+        let _ = LoginManager.shared.loginStatusSubject
+            .subscribe(onNext: { loginStatus in
+                switch loginStatus {
+                case .inProgress:
+                    print("login process")
+                case .loggedIn:
+                    self.loginButton.isLogin = true
+                    self.toggleLoginLogoutButton()
+                case .loggedOut:
+                    self.loginButton.isLogin = false
+                    self.toggleLoginLogoutButton()
+                }
+            })
+    }
+    
+    private func toggleLoginLogoutButton() {
+        loginButton.toggleButtonTitle()
     }
 }
 

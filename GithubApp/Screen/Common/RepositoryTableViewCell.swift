@@ -26,6 +26,10 @@ private enum Size {
 
 final class RepositoryTableViewCell: BaseTableViewCell {
     
+    // MARK: - Properties
+    private var isStarFilled: Bool = true
+    var repository: Repository?
+    
     // MARK: - UI Properties
     
     private let fullNameLabel: UILabel = {
@@ -74,15 +78,24 @@ final class RepositoryTableViewCell: BaseTableViewCell {
     
     let starButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage.load(systemName: "star"), for: .normal)
+        button.setImage(ImageLiteral.starFill, for: .normal)
         button.tintColor = .githubYellow
         return button
     }()
     
     // MARK: - Life Cycle
-
-    override func render() {
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupButton()
         selectionStyle = .none
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func render() {
         
         addSubview(stackView)
         stackView.snp.makeConstraints { make in
@@ -91,7 +104,7 @@ final class RepositoryTableViewCell: BaseTableViewCell {
             make.trailing.equalToSuperview().inset(Size.horizontalPadding + Size.starButtonWidth)
         }
         
-        addSubview(starButton)
+        contentView.addSubview(starButton)
         starButton.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.trailing.equalToSuperview().inset(Size.horizontalPadding)
@@ -105,5 +118,27 @@ final class RepositoryTableViewCell: BaseTableViewCell {
         descriptionLabel.text = repositoryInfo.descriptionField
         let label = starNumber.arrangedSubviews[1] as! UILabel
         label.text = repositoryInfo.stargazersCount
+    }
+    
+    private func setupButton() {
+        starButton.addTarget(self, action: #selector(starButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc func starButtonTapped() {
+        isStarFilled = !isStarFilled
+        toggleStarButtonImage()
+        if isStarFilled {
+            GithubManager.shared.starRepository(repo: repository?.fullName ?? "")
+        } else {
+            GithubManager.shared.unstarRepository(repo: repository?.fullName ?? "")
+        }
+    }
+    
+    func toggleStarButtonImage() {
+        if isStarFilled {
+            self.starButton.setImage(ImageLiteral.starFill, for: .normal)
+        } else {
+            self.starButton.setImage(ImageLiteral.starOutline, for: .normal)
+        }
     }
 }
