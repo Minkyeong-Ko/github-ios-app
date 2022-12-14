@@ -14,6 +14,7 @@ import RxSwift
 class GithubManager {
     // MARK: - Rx
     let repositoriesSubject = BehaviorSubject<[Repository]>(value: [])
+    let searchRepositoriesSubject = BehaviorSubject<[Repository]>(value: [])
     let disposeBag = DisposeBag()
     // TODO: - dispose 처리 시점
     
@@ -91,22 +92,35 @@ class GithubManager {
     
     // MARK: - 레포지터리 검색
     
-    func searchRepoTest() {
-        let url = "https://api.github.com/search/repositories?q=rxSwift&page=1" // temp url
+    func searchRepoTest(with text: String) {
+        let url = "https://api.github.com/search/repositories?q=\(text)&page=1"
         let accessToken = KeychainManager.shared.getItem(key: "accessToken")
         
-        let headers: HTTPHeaders = ["Accept": "application/vnd.github.v3+json",
-                                    "Authorization": "token \(accessToken as! String)"]
+        var headers: HTTPHeaders = HTTPHeaders()
+        
+        do {
+            if try LoginManager.shared.loginStatusSubject.value() == .loggedIn {
+                headers = ["Accept": "application/vnd.github.v3+json",
+                                        "Authorization": "token \(accessToken as! String)"]
+            } else {
+                headers = ["Accept": "application/vnd.github.v3+json"]
+            }
+        } catch {
+            print(error)
+        }
         
         AF.request(url, method: .get, parameters: [:], headers: headers)
             .responseDecodable(of: SearchRepositoriesResponse.self) { response in
                 switch response.result {
                 case .success(let data):
                     print(data)
-                    data.items?.forEach{
-                        print($0.fullName ?? "")
-                        print($0.descriptionField ?? "")
-                        print($0.stargazersCount ?? "")
+                    let result = data.items?.map {
+                        Repository(fullName: $0.fullName ?? "No Name",
+                                   descriptionField: $0.descriptionField ?? "No Description",
+                                   stargazersCount: String($0.stargazersCount ?? 0))
+                    }
+                    if let result {
+                        self.searchRepositoriesSubject.onNext(result)
                     }
                 case .failure(let error):
                     print(error)
