@@ -15,7 +15,7 @@ final class LoginLogoutButton: UIButton {
     
     var isLogin = false
     
-    // MARK: - Life Cycle
+    // MARK: - Init
 
     override init(frame: CGRect) {
         super.init(frame: frame)

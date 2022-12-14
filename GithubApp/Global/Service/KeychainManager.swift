@@ -8,10 +8,16 @@
 import Foundation
 
 final class KeychainManager {
+    
+    // MARK: - Shared
+    
     static let shared = KeychainManager()
     
+    // MARK: - Init
+
     private init() {}
     
+    // 키체인 추가
     func addItem(key: Any, pwd: Any) -> Bool {
         let addQuery: [CFString: Any] = [kSecClass: kSecClassGenericPassword,
                                          kSecAttrAccount: key,
@@ -32,6 +38,7 @@ final class KeychainManager {
         return result
     }
     
+    // 키체인 얻기
     func getItem(key: Any) -> Any? {
         let getQuery: [CFString: Any] = [kSecClass: kSecClassGenericPassword,
                                       kSecAttrAccount: key,
@@ -52,6 +59,7 @@ final class KeychainManager {
         return nil
     }
     
+    // 키체인 변경
     func updateItem(value: Any, key: Any) -> Bool {
         let prevQuery: [CFString: Any] = [kSecClass: kSecClassGenericPassword,
                                               kSecAttrAccount: key]
@@ -68,6 +76,7 @@ final class KeychainManager {
         return result
     }
     
+    // 키체인 삭제
     func deleteItem(key: String) -> Bool {
         let deleteQuery: [CFString: Any] = [kSecClass: kSecClassGenericPassword,
                                             kSecAttrAccount: key]

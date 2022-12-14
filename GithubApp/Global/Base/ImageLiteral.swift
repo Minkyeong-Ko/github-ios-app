@@ -20,6 +20,7 @@ enum ImageLiteral {
     static var repositorySymbol: UIImage { .load(systemName: "book.closed") }
     static var starFill: UIImage { .load(systemName: "star.fill") }
     static var starOutline: UIImage { .load(systemName: "star") }
+    static var searchSymbol: UIImage { .load(systemName: "magnifyingglass") }
 }
 
 extension UIImage {

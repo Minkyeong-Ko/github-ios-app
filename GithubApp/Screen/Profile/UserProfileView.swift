@@ -12,15 +12,17 @@ import RxSwift
 private enum Size {
     static let userProfileHorizontalPadding = 30.0
     static let horizontalPadding = 20.0
+    static let profileImageSize = 86.0
 }
 
 final class UserProfileView: UIView {
-    // MARK: - Properties
+    
+    // MARK: - UI Properties
+    
     private let profileImage: UIImageView = {
         let imageView = UIImageView()
         let image = ImageLiteral.userProfileSymbol
         imageView.image = image
-        
         return imageView
     }()
     
@@ -30,6 +32,8 @@ final class UserProfileView: UIView {
         label.font = .systemFont(ofSize: 22, weight: .bold)
         return label
     }()
+    
+    // MARK: - Init
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -43,7 +47,7 @@ final class UserProfileView: UIView {
         addSubview(profileImage)
         profileImage.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.size.equalTo(86)
+            make.size.equalTo(Size.profileImageSize)
             make.trailing.equalToSuperview().inset(Size.userProfileHorizontalPadding)
         }
     }
@@ -52,6 +56,8 @@ final class UserProfileView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Func
+
     public func config(imageURL: String, name: String) {
         GithubManager.shared.getProfileImage(from: imageURL)
             .observe(on: MainScheduler.instance)
