@@ -37,9 +37,7 @@ final class SearchViewController: BaseViewController {
     
     // MARK: - Properties
     
-    private let dummy = Repository(fullName: "ReactiveX/RxSwift",
-                                          descriptionField: "Reactive Programming in Swift",
-                                   stargazersCount: "129")
+    private var tableViewDataSource: [Repository] = []
     
     // MARK: - UI Properties
     
@@ -90,6 +88,7 @@ final class SearchViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupRx()
         setDelegation()
         hideKeyboardWhenTappedAround()
         
@@ -133,6 +132,16 @@ final class SearchViewController: BaseViewController {
     private func setDelegation() {
         repositoryTableView.delegate = self
         repositoryTableView.dataSource = self
+        searchTextField.delegate = self
+    }
+    
+    private func setupRx() {
+        
+        let _ = GithubManager.shared.searchRepositoriesSubject
+            .subscribe(onNext: { array in
+                self.tableViewDataSource = array
+                self.repositoryTableView.reloadData()
+            })
     }
 }
 
@@ -140,12 +149,12 @@ final class SearchViewController: BaseViewController {
 
 extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 50
+        return tableViewDataSource.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = RepositoryTableViewCell()
-        cell.configure(repositoryInfo: dummy)
+        cell.configure(repositoryInfo: tableViewDataSource[indexPath.row])
         return cell
     }
 }
@@ -161,5 +170,21 @@ extension SearchViewController {
     
     @objc func dismissKeyboard() {
         view.endEditing(true)
+    }
+}
+
+// MARK: - SearchViewController + UITextFieldDelegate
+
+extension SearchViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+        hideKeyboardWhenTappedAround()
+        
+        textField.resignFirstResponder()
+        
+        let text = textField.text ?? ""
+        GithubManager.shared.searchRepoTest(with: text.replacingOccurrences(of: " ", with: ""))
+        
+        return true
     }
 }
